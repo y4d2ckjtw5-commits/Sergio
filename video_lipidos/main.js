@@ -56,5 +56,9 @@ function renderFrame(gt) {
   X.fillStyle = 'rgba(107,165,57,0.9)'; X.fillRect(0, H - 4, W * gt / tot, 4);
 }
 
-function init() { const cv = document.getElementById('c'); X = cv.getContext('2d'); }
+function applyLang() {
+  if (LANG !== 'ar') return;
+  SCENES.forEach((s, i) => { if (AR_LINES[i].length !== s.lines.length) throw new Error('líneas AR escena ' + i); s.lines = AR_LINES[i]; });
+}
+function init() { applyLang(); const cv = document.getElementById('c'); X = cv.getContext('2d'); }
 function getLines() { return SCENES.map(s => s.lines.map(lineVoice)); }

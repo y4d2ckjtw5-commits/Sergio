@@ -4,7 +4,7 @@ from piper import PiperVoice, SynthesisConfig
 lines = json.load(open(sys.argv[1])); model = sys.argv[2]; out = sys.argv[3]
 os.makedirs(out, exist_ok=True)
 voice = PiperVoice.load(model)
-cfg = SynthesisConfig(length_scale=1.15, noise_scale=0.6, noise_w_scale=0.8)
+cfg = SynthesisConfig(length_scale=float(os.environ.get("LSCALE", "1.15")), noise_scale=0.6, noise_w_scale=0.8)
 durs = []
 for i, sc in enumerate(lines):
     d = []

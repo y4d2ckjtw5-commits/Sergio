@@ -7,7 +7,7 @@ const WORKERS = 4;
 (async () => {
   const b = await chromium.launch();
   const pg0 = await b.newPage({ viewport: { width: 1280, height: 720 } });
-  await pg0.goto('file://' + path.join(__dirname, 'index.html'));
+  await pg0.goto('file://' + path.join(__dirname, 'index.html') + '?lang=' + (process.env.VLANG || 'es'));
   const info = await pg0.evaluate(d => { const tot = buildTimeline(d); return { tot, tl: TIMELINE }; }, durs);
   const starts = []; info.tl.forEach((s, i) => s.cues.forEach((c, j) => starts.push({ file: `s${String(i).padStart(2, '0')}_${String(j).padStart(2, '0')}.wav`, t: s.start + c })));
   fs.writeFileSync(path.join(out, 'starts.json'), JSON.stringify({ total: info.tot, starts }));
@@ -15,7 +15,7 @@ const WORKERS = 4;
   const per = Math.ceil(N / WORKERS);
   await Promise.all([...Array(WORKERS).keys()].map(async w => {
     const pg = w === 0 ? pg0 : await b.newPage({ viewport: { width: 1280, height: 720 } });
-    if (w) { await pg.goto('file://' + path.join(__dirname, 'index.html')); await pg.evaluate(d => buildTimeline(d), durs); }
+    if (w) { await pg.goto('file://' + path.join(__dirname, 'index.html') + '?lang=' + (process.env.VLANG || 'es')); await pg.evaluate(d => buildTimeline(d), durs); }
     const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
       '-c:v', 'libx264', '-preset', 'medium', '-crf', '22', '-pix_fmt', 'yuv420p', '-threads', '1', path.join(out, `part${w}.mp4`)]);
     const a = w * per, z = Math.min(N, a + per);

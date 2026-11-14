@@ -1,7 +1,16 @@
 // Utilidades de dibujo para el vídeo de lípidos (canvas 1280x720)
 const W = 1280, H = 720;
 let X; // contexto 2D
-const FONT = '"Liberation Sans","DejaVu Sans",sans-serif';
+const FONT = '"Liberation Sans","Noto Sans Arabic","DejaVu Sans",sans-serif';
+const LANG = new URLSearchParams(location.search).get('lang') || 'es';
+const ARRE = /[\u0600-\u06FF]/;
+const MISS = new Set();
+function tr(s) {
+  if (LANG !== 'ar' || typeof TR === 'undefined') return s;
+  if (TR[s] !== undefined) return TR[s];
+  if (!ARRE.test(s) && /[a-záéíóúñ]{4,}/i.test(s)) MISS.add(s);
+  return s;
+}
 const EMO = '"Noto Color Emoji"';
 const C = {
   bg: '#FBF9F1', green: '#6BA539', dgreen: '#3E7A1E', ink: '#22313F', blue: '#3B7DD8',
@@ -19,15 +28,17 @@ function rnd(i) { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s -
 function txt(s, x, y, o = {}) {
   const { size = 24, color = C.ink, weight = '', align = 'center', base = 'middle', alpha = 1, family = FONT } = o;
   if (alpha <= 0) return;
-  X.save(); X.globalAlpha *= alpha;
+  s = tr(s);
+  X.save(); X.globalAlpha *= alpha; X.direction = ARRE.test(s) ? 'rtl' : 'ltr';
   X.font = `${weight} ${size}px ${family}`; X.fillStyle = color; X.textAlign = align; X.textBaseline = base;
   if (o.rot) { X.translate(x, y); X.rotate(o.rot); x = 0; y = 0; }
   if (o.stroke) { X.lineWidth = o.stroke; X.strokeStyle = o.strokeColor || '#fff'; X.lineJoin = 'round'; X.strokeText(s, x, y); }
   X.fillText(s, x, y); X.restore();
 }
-function tw(s, size = 24, weight = '') { X.font = `${weight} ${size}px ${FONT}`; return X.measureText(s).width; }
+function tw(s, size = 24, weight = '') { s = tr(s); X.font = `${weight} ${size}px ${FONT}`; return X.measureText(s).width; }
 function emo(s, x, y, size = 48, alpha = 1) { txt(s, x, y, { size, family: EMO, alpha }); }
 function wrap(s, maxW, size, weight = '') {
+  s = tr(s);
   X.font = `${weight} ${size}px ${FONT}`; const words = s.split(' '); const lines = []; let cur = '';
   for (const w of words) { const t = cur ? cur + ' ' + w : w; if (X.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; }
   if (cur) lines.push(cur); return lines;

@@ -2,7 +2,9 @@
 
 Vídeo explicativo (≈19 min, 1280×720, narrado en español y con subtítulos) basado en las dos partes del tema 3 «Los lípidos».
 
-**Vídeo final:** `Los_lipidos_video_animado.mp4`
+**Vídeos finales:**
+- Español: `Los_lipidos_video_animado.mp4` (≈19 min)
+- Árabe: `Los_lipidos_video_animado_AR.mp4` (≈27,5 min). Narración, subtítulos y rótulos en árabe (voz Piper `ar_JO-kareem-medium`). Las traducciones están en `ar.js`; se genera con `VLANG=ar` en `dump_lines.js`, `preview.js` y `render.js`.
 
 ## Contenido (26 escenas)
 

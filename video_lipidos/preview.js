@@ -7,7 +7,7 @@ const fs = require('fs'), path = require('path');
   fs.mkdirSync(out, { recursive: true });
   const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1280, height: 720 } });
   pg.on('pageerror', e => console.log('ERR', e.message)); pg.on('console', m => console.log('LOG', m.text()));
-  await pg.goto('file://' + path.join(__dirname, 'index.html'));
+  await pg.goto('file://' + path.join(__dirname, 'index.html') + '?lang=' + (process.env.VLANG || 'es'));
   const n = await pg.evaluate(spl => { const d = SCENES.map(s => s.lines.map(() => spl)); buildTimeline(d); return SCENES.length; }, spl);
   const list = which === 'all' ? [...Array(n).keys()] : which.split(',').map(Number);
   for (const si of list) {
@@ -17,5 +17,6 @@ const fs = require('fs'), path = require('path');
       fs.writeFileSync(`${out}/s${String(si).padStart(2, '0')}_${j}.jpg`, Buffer.from(d.split(',')[1], 'base64'));
     }
   }
+  console.log('SIN TRADUCIR:', JSON.stringify(await pg.evaluate(() => [...MISS])));
   await b.close();
 })();

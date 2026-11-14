@@ -150,6 +150,7 @@ SCENES.push({
 
 // ---------- 2. CLASIFICACIÓN ----------
 function node(x, y, w, h, label, fill, p, o = {}) {
+  label = tr(label);
   pop(p, x, y, () => {
     box(x - w / 2, y - h / 2, w, h, { fill, r: 14, stroke: o.stroke });
     const ls = label.split('\n');
